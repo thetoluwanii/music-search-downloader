@@ -1,0 +1,93 @@
+class MusicDownloader:
+    def __init__(self):
+        self.root = ctk.CTk()
+        self.root.title("Music Search and Downloader for YouTube")
+
+        # Set default theme
+        ctk.set_appearance_mode("System")  # Light and Dark mode toggle
+        
+
+        # Create the download folder if it doesn't exist
+        self.download_folder = 'music'
+        if not os.path.exists(self.download_folder):
+            os.makedirs(self.download_folder)
+
+        # History file
+        self.history_file = 'history.json'
+        self.load_history()
+
+        # Configure grid layout
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(1, weight=1)
+
+        # Sidebar frame with options
+        self.sidebar_frame = ctk.CTkFrame(self.root, width=200)
+        self.sidebar_frame.grid(row=0, column=0, sticky="nswe")
+
+        self.toggle_theme_button = ctk.CTkButton(self.sidebar_frame, text="Light/Dark ", command=self.toggle_theme)
+        self.toggle_theme_button.grid(row=0, column=0, padx=10, pady=10)
+
+        self.recommendations_label = ctk.CTkLabel(self.sidebar_frame, text="Recommendations", font=("Arial", 16))
+        self.recommendations_label.grid(row=1, column=0, padx=10, pady=10)
+
+        self.recommendations_listbox = ctk.CTkLabel(self.sidebar_frame, text="", font=("Arial", 12))
+        self.recommendations_listbox.grid(row=2, column=0, padx=10, pady=10)
+
+        # Main frame for download section
+        self.main_frame = ctk.CTkFrame(self.root)
+        self.main_frame.grid(row=0, column=1, sticky="nswe")
+
+        self.query_label = ctk.CTkLabel(self.main_frame, text="Search and Download any song from Youtube!", font=("Arial", 40))
+        self.query_label.pack(pady=10)
+
+        self.query_entry = ctk.CTkEntry(self.main_frame, width=300, height=30, font=("Arial", 12), placeholder_text="Search your favourite song or artist...")
+        self.query_entry.pack(pady=10)
+
+        self.search_button = ctk.CTkButton(self.main_frame, text="Search", command=self.search_music, font=("Arial", 12), width=100, height=30)
+        self.search_button.pack(pady=10)
+
+        self.result_label = ctk.CTkLabel(self.main_frame, text="", font=("Arial", 12))
+        self.result_label.pack(pady=10)
+
+        self.choice_label = ctk.CTkLabel(self.main_frame, text="", font=("Arial", 12))
+        self.choice_label.pack(pady=10)
+
+        self.choice_entry = ctk.CTkEntry(self.main_frame, width=100, height=30, font=("Arial", 12), placeholder_text="Enter from 1-5")
+        self.choice_entry.pack(pady=10)
+
+        self.preview_button = ctk.CTkButton(self.main_frame, text="Preview", command=self.preview_music, font=("Arial", 12), width=100, height=30, state="disabled")
+        self.preview_button.pack(pady=10)
+
+        self.download_button = ctk.CTkButton(self.main_frame, text="Download", command=self.download_music, font=("Arial", 12), width=100, height=30, state="disabled")
+        self.download_button.pack(pady=10)
+
+        self.status_label = ctk.CTkLabel(self.main_frame, text="", font=("Arial", 12))
+        self.status_label.pack(pady=10)
+
+        self.search_results = []  # To hold search results for download
+
+        self.update_recommendations()  # Populate recommendations
+
+    def load_history(self):
+        if os.path.exists(self.history_file):
+            with open(self.history_file, 'r') as f:
+                self.history = json.load(f)
+        else:
+            self.history = []
+
+    def save_history(self):
+        with open(self.history_file, 'w') as f:
+            json.dump(self.history, f)
+
+    def update_recommendations(self):
+        if self.history:
+            last_song = self.history[-1]['title']
+            recommendation_text = f"Based on your last download: {last_song}\nYou might like similar songs."
+        else:
+            recommendation_text = "No recommendations yet."
+        self.recommendations_listbox.configure(text=recommendation_text)
+
+    def toggle_theme(self):
+        current_mode = ctk.get_appearance_mode()
+        new_mode = "Light" if current_mode == "Dark" else "Dark"
+        ctk.set_appearance_mode(new_mode)
