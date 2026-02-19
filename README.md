@@ -32,7 +32,7 @@ Features
 
 - JSON
 
-  System Architecture
+## System Architecture
 
 User Input (URL)
 → yt-dlp extracts media
@@ -40,7 +40,7 @@ User Input (URL)
 → File saved locally
 → Download history updated
 
-Key Technical Concepts Demonstrated
+## Key Technical Concepts Demonstrated
 
 External library integration
 
@@ -52,14 +52,13 @@ GUI design & event-driven logic
 
 Debugging and runtime error resolution
 
-Challenges & Solutions
 
-Example:
+# Challenges & Solutions
 
 Issue: Dependency conflicts during audio conversion
 Solution: Structured dependency management and validation checks before execution
 
-Lessons Learned
+# Lessons Learned
 
 Managing third-party libraries
 
